@@ -1,5 +1,5 @@
 <template>
-    <span class="badge" :class="type">
+    <span class="badge">
         {{ text }}
     </span>
 </template>
@@ -9,8 +9,8 @@ export default {
     computed: {
         text() {
             return this.title.toUpperCase();
-        }
-    }
+        },
+    },
 };
 </script>
 

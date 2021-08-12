@@ -3,11 +3,10 @@
         <nav>
             <h1><router-link to="/">Manage your tasks</router-link></h1>
             <ul>
-                <li><router-link to="/login">Login</router-link></li>
+                <!-- <li><router-link to="/login">Login</router-link></li> -->
                 <li>
-                    <router-link to="/requests">Requests</router-link>
+                    <base-badge title="User1"></base-badge>
                 </li>
-                <li><router-link to="/auth">Login</router-link></li>
                 <base-button>Logout</base-button>
             </ul>
         </nav>
