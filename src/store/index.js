@@ -1,25 +1,12 @@
 import { createStore } from 'vuex';
 
 export default createStore({
-    state: {
-        allActivities: [],
+    state() {
+        return {
+            allActivities: [],
+        };
     },
-    mutations: {
-        pushActivity(state, payload) {
-            state.allActivities.push(payload);
-        },
-    },
-    actions: {
-        addActivity(context, payload) {
-            context.commit('pushActivity', payload);
-        },
-    },
-    getters: {
-        allActivities(state) {
-            return state.allActivities;
-        },
-        hasActivities(state) {
-            return state.allActivities.length > 0;
-        },
-    },
+    mutations: {},
+    actions: {},
+    getters: {},
 });

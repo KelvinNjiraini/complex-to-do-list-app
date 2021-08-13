@@ -12,47 +12,22 @@
             </div>
         </section>
         <section>
-            <p v-if="!hasActivities">Currently no activities registered</p>
-            <ul v-else>
-                <li v-for="activity in allActivities" :key="activity.id">
+            <ul>
+                <li>
                     <span>{{ activity.val }}</span>
                     <div>
                         <base-button>Edit</base-button>
-                        <base-button @click="deleteItem(index)"
-                            >Delete</base-button
-                        >
+                        <base-button>Delete</base-button>
                     </div>
                 </li>
             </ul>
+            <p>Currently no activities registered</p>
         </section>
     </base-card>
 </template>
 
 <script>
-export default {
-    data() {
-        return {
-            newActivity: {
-                val: '',
-                id: new Date().toISOString(),
-            },
-        };
-    },
-    computed: {
-        allActivities() {
-            return this.$store.getters.allActivities;
-        },
-        hasActivities() {
-            this.$store.getters.hasActivities;
-        },
-    },
-    methods: {
-        addActivity() {
-            this.$store.dispatch('addActivity', this.newActivity);
-            this.newActivity.val = '';
-        },
-    },
-};
+export default {};
 </script>
 
 <style scoped>
