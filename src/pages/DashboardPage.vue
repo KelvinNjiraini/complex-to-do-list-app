@@ -5,17 +5,23 @@
             <div class="input-group">
                 <input
                     type="text"
-                    v-model.trim="newActivity"
+                    v-model.trim="newActivity.val"
                     @keydown.enter="addActivity"
                 />
                 <base-button @click="addActivity">Add</base-button>
             </div>
         </section>
         <section>
-            <p v-if="!allActivities">Currently no activities registered</p>
-            <ul>
-                <li v-for="activity in allActivities" :key="activity">
-                    {{ activity }}
+            <p v-if="!hasActivities">Currently no activities registered</p>
+            <ul v-else>
+                <li v-for="activity in allActivities" :key="activity.id">
+                    <span>{{ activity.val }}</span>
+                    <div>
+                        <base-button>Edit</base-button>
+                        <base-button @click="deleteItem(index)"
+                            >Delete</base-button
+                        >
+                    </div>
                 </li>
             </ul>
         </section>
@@ -26,18 +32,24 @@
 export default {
     data() {
         return {
-            newActivity: '',
+            newActivity: {
+                val: '',
+                id: new Date().toISOString(),
+            },
         };
     },
     computed: {
         allActivities() {
             return this.$store.getters.allActivities;
         },
+        hasActivities() {
+            this.$store.getters.hasActivities;
+        },
     },
     methods: {
         addActivity() {
             this.$store.dispatch('addActivity', this.newActivity);
-            this.newActivity = '';
+            this.newActivity.val = '';
         },
     },
 };
@@ -70,5 +82,20 @@ h3 {
 
 .invalid input {
     border: 1px solid red;
+}
+li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    list-style: none;
+    width: 85%;
+    padding: 0.5rem;
+    border: 1px solid black;
+    border-radius: 3px;
+    margin: 1rem 0;
+}
+span {
+    color: black;
+    font-size: 1.3rem;
 }
 </style>

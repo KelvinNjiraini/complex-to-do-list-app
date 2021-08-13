@@ -18,5 +18,8 @@ export default createStore({
         allActivities(state) {
             return state.allActivities;
         },
+        hasActivities(state) {
+            return state.allActivities.length > 0;
+        },
     },
 });
