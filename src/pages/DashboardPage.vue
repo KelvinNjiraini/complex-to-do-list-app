@@ -22,7 +22,9 @@
                     <span>{{ activity.val }}</span>
                     <div>
                         <base-button>Edit</base-button>
-                        <base-button>Delete</base-button>
+                        <base-button @click="removeItem(activity.id)"
+                            >Delete</base-button
+                        >
                     </div>
                 </li>
             </ul>
@@ -31,7 +33,7 @@
                 Currently no activities registered
             </p>
             <p v-else-if="error">
-                there was an error
+                There was an error
             </p>
         </section>
     </base-card>
@@ -46,15 +48,13 @@ export default {
                 id: null,
             },
             error: false,
+            allActivities: [],
         };
     },
     computed: {
         hasActivities() {
             // return this.allActivities.length > 0;
             return this.$store.getters.hasActivities;
-        },
-        allActivities() {
-            return this.$store.getters.allActivities;
         },
     },
     methods: {
@@ -72,6 +72,19 @@ export default {
             this.activity.id = null;
             this.activity.val = '';
         },
+        loadAllActivities() {
+            const storedActivities = this.$store.getters.allActivities;
+            this.allActivities = storedActivities;
+        },
+        removeItem(id) {
+            const filteredActivities = this.allActivities.filter((activity) => {
+                return activity.id !== id;
+            });
+            this.allActivities = filteredActivities;
+        },
+    },
+    created() {
+        this.loadAllActivities();
     },
 };
 </script>
