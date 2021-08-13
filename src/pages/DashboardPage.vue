@@ -45,13 +45,16 @@ export default {
                 val: '',
                 id: null,
             },
-            allActivities: [],
             error: false,
         };
     },
     computed: {
         hasActivities() {
-            return this.allActivities.length > 0;
+            // return this.allActivities.length > 0;
+            return this.$store.getters.hasActivities;
+        },
+        allActivities() {
+            return this.$store.getters.allActivities;
         },
     },
     methods: {
@@ -64,7 +67,8 @@ export default {
                 id: this.activity.id,
                 val: this.activity.val,
             };
-            this.allActivities.push(newActivity);
+            // this.allActivities.push(newActivity);
+            this.$store.dispatch('addActivity', newActivity);
             this.activity.id = null;
             this.activity.val = '';
         },

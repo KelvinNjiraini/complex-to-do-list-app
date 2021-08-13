@@ -6,7 +6,22 @@ export default createStore({
             allActivities: [],
         };
     },
-    mutations: {},
-    actions: {},
-    getters: {},
+    mutations: {
+        addActivity(state, payload) {
+            state.allActivities.push(payload);
+        },
+    },
+    actions: {
+        addActivity(context, payload) {
+            context.commit('addActivity', payload);
+        },
+    },
+    getters: {
+        hasActivities(state) {
+            return state.allActivities.length > 0;
+        },
+        allActivities(state) {
+            return state.allActivities;
+        },
+    },
 });
