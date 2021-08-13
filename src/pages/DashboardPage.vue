@@ -2,18 +2,23 @@
     <base-card>
         <h3>My Dashboard</h3>
         <section>
-            <div class="input-group">
-                <input
-                    type="text"
-                    v-model.trim="newActivity.val"
-                    @keydown.enter="addActivity"
-                />
-                <base-button @click="addActivity">Add</base-button>
-            </div>
+            <form @submit.prevent="addActivity">
+                <div class="input-group">
+                    <label for="id">id</label>
+                    <input type="text" v-model.trim="activity.id" />
+                </div>
+                <div class="input-group">
+                    <label for="activity">Activity</label>
+                    <input type="text" v-model.trim="activity.val" />
+                </div>
+                <base-button>Add</base-button>
+            </form>
         </section>
+    </base-card>
+    <base-card>
         <section>
-            <ul>
-                <li>
+            <ul v-if="hasActivities">
+                <li v-for="activity in allActivities" :key="activity.id">
                     <span>{{ activity.val }}</span>
                     <div>
                         <base-button>Edit</base-button>
@@ -21,13 +26,50 @@
                     </div>
                 </li>
             </ul>
-            <p>Currently no activities registered</p>
+
+            <p v-else-if="!hasActivities && !error">
+                Currently no activities registered
+            </p>
+            <p v-else-if="error">
+                there was an error
+            </p>
         </section>
     </base-card>
 </template>
 
 <script>
-export default {};
+export default {
+    data() {
+        return {
+            activity: {
+                val: '',
+                id: null,
+            },
+            allActivities: [],
+            error: false,
+        };
+    },
+    computed: {
+        hasActivities() {
+            return this.allActivities.length > 0;
+        },
+    },
+    methods: {
+        addActivity() {
+            if (this.activity === '') {
+                this.error = true;
+                return;
+            }
+            const newActivity = {
+                id: this.activity.id,
+                val: this.activity.val,
+            };
+            this.allActivities.push(newActivity);
+            this.activity.id = null;
+            this.activity.val = '';
+        },
+    },
+};
 </script>
 
 <style scoped>
@@ -72,5 +114,11 @@ li {
 span {
     color: black;
     font-size: 1.3rem;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.5rem;
 }
 </style>
