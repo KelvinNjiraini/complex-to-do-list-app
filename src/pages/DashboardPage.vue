@@ -1,42 +1,45 @@
 <template>
-    <base-card>
-        <h3>My Dashboard</h3>
-        <section>
-            <form @submit.prevent="addActivity">
-                <div class="input-group">
-                    <label for="id">id</label>
-                    <input type="text" v-model.trim="activity.id" />
-                </div>
-                <div class="input-group">
-                    <label for="activity">Activity</label>
-                    <input type="text" v-model.trim="activity.val" />
-                </div>
-                <base-button>Add</base-button>
-            </form>
-        </section>
-    </base-card>
-    <base-card>
-        <section>
-            <ul v-if="hasActivities">
-                <li v-for="activity in allActivities" :key="activity.id">
-                    <span>{{ activity.val }}</span>
-                    <div>
-                        <base-button>Edit</base-button>
-                        <base-button @click="removeItem(activity.id)"
-                            >Delete</base-button
-                        >
+    <div>
+        <base-card>
+            <h3>My Dashboard</h3>
+            <section>
+                <form @submit.prevent="addActivity">
+                    <div class="input-group">
+                        <label for="id">id</label>
+                        <input type="text" v-model.trim="activity.id" />
                     </div>
-                </li>
-            </ul>
+                    <div class="input-group">
+                        <label for="activity">Activity</label>
+                        <input type="text" v-model.trim="activity.val" />
+                        <p v-if="error">{{ errorMessage }}</p>
+                    </div>
+                    <base-button>Add</base-button>
+                </form>
+            </section>
+        </base-card>
+        <base-card>
+            <section>
+                <ul v-if="hasActivities">
+                    <li v-for="activity in allActivities" :key="activity.id">
+                        <span>{{ activity.val }}</span>
+                        <div>
+                            <base-button>Edit</base-button>
+                            <base-button @click="removeItem(activity.id)"
+                                >Delete</base-button
+                            >
+                        </div>
+                    </li>
+                </ul>
 
-            <p v-else-if="!hasActivities && !error">
-                Currently no activities registered
-            </p>
-            <p v-else-if="error">
-                There was an error
-            </p>
-        </section>
-    </base-card>
+                <p v-else-if="!hasActivities && !error">
+                    Currently no activities registered
+                </p>
+                <p v-else-if="error">
+                    There was an error
+                </p>
+            </section>
+        </base-card>
+    </div>
 </template>
 
 <script>
@@ -48,19 +51,27 @@ export default {
                 id: null,
             },
             error: false,
+            errorMessage: null,
             allActivities: [],
         };
     },
     computed: {
         hasActivities() {
             // return this.allActivities.length > 0;
-            return this.$store.getters.hasActivities;
+            return (
+                this.$store.getters.hasActivities &&
+                this.allActivities.length > 0
+            );
         },
     },
     methods: {
         addActivity() {
-            if (this.activity === '') {
+            this.error = false;
+            this.errorMessage = null;
+            if (this.activity.val === '') {
                 this.error = true;
+                this.errorMessage =
+                    'Please enter an activity before hitting the add button';
                 return;
             }
             const newActivity = {
