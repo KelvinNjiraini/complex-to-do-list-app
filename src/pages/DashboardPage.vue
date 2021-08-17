@@ -23,7 +23,10 @@
                     <li v-for="activity in allActivities" :key="activity.id">
                         <span>{{ activity.val }}</span>
                         <div>
-                            <base-button>Edit</base-button>
+                            <base-button
+                                @click="$emit('editActivityValue', activity)"
+                                >Edit</base-button
+                            >
                             <base-button @click="removeItem(activity.id)"
                                 >Delete</base-button
                             >
@@ -43,7 +46,11 @@
 </template>
 
 <script>
+import EditActivity from './../components/misc/EditActivity.vue';
 export default {
+    components: {
+        EditActivity,
+    },
     data() {
         return {
             activity: {
