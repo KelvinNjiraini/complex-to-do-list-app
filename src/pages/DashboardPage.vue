@@ -20,7 +20,7 @@
         <base-card>
             <section>
                 <ul v-if="hasActivities">
-                    <li v-for="activity in allActivities" :key="activity.id">
+                    <li v-for="(activity, index) in allActivities" :key="index">
                         <div v-if="!isEditting">
                             <span>{{ activity.val }}</span>
                             <div>
@@ -118,7 +118,11 @@ export default {
         editActivityValue() {
             this.isEditting = true;
         },
-        saveChanges(activity) {},
+        saveChanges(activity) {
+            activity.newValue = this.activity.val;
+            this.$store.dispatch('updateActivity', activity);
+            this.isEditting = false;
+        },
         cancelChanges() {
             this.isEditting = false;
         },

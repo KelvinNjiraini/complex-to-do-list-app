@@ -15,6 +15,14 @@ export default createStore({
                 (activity) => activity.id !== payload
             );
         },
+        updateActivity(state, payload) {
+            const oldActivityIndex = state.allActivities.findIndex(
+                (activity) => {
+                    return (activity.id = payload.id);
+                }
+            );
+            state.allActivities[oldActivityIndex].val = payload.newValue;
+        },
     },
     actions: {
         addActivity(context, payload) {
@@ -22,6 +30,9 @@ export default createStore({
         },
         deleteActivity(context, payload) {
             context.commit('deleteActivity', payload);
+        },
+        updateActivity(context, payload) {
+            context.commit('updateActivity', payload);
         },
     },
     getters: {
