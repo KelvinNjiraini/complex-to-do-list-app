@@ -21,16 +21,19 @@
             <section>
                 <ul v-if="hasActivities">
                     <li v-for="activity in allActivities" :key="activity.id">
-                        <span>{{ activity.val }}</span>
-                        <div>
-                            <base-button
-                                @click="$emit('editActivityValue', activity)"
-                                >Edit</base-button
-                            >
-                            <base-button @click="removeItem(activity.id)"
-                                >Delete</base-button
-                            >
+                        <div v-if="!isEditting">
+                            <span>{{ activity.val }}</span>
+                            <div>
+                                <base-button
+                                    @click="editActivityValue(activity.val)"
+                                    >Edit</base-button
+                                >
+                                <base-button @click="removeItem(activity.id)"
+                                    >Delete</base-button
+                                >
+                            </div>
                         </div>
+                        <div v-else></div>
                     </li>
                 </ul>
 
@@ -46,7 +49,6 @@
 </template>
 
 <script>
-import EditActivity from './../components/misc/EditActivity.vue';
 export default {
     components: {
         EditActivity,
@@ -57,6 +59,8 @@ export default {
                 val: '',
                 id: null,
             },
+            isEditting: false,
+            pendingActivity: null,
             error: false,
             errorMessage: null,
             allActivities: [],
