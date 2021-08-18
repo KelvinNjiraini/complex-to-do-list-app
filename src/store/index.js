@@ -10,10 +10,18 @@ export default createStore({
         addActivity(state, payload) {
             state.allActivities.push(payload);
         },
+        deleteActivity(state, payload) {
+            state.allActivities = state.allActivities.filter(
+                (activity) => activity.id !== payload
+            );
+        },
     },
     actions: {
         addActivity(context, payload) {
             context.commit('addActivity', payload);
+        },
+        deleteActivity(context, payload) {
+            context.commit('deleteActivity', payload);
         },
     },
     getters: {

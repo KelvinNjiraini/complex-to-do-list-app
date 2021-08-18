@@ -24,8 +24,7 @@
                         <div v-if="!isEditting">
                             <span>{{ activity.val }}</span>
                             <div>
-                                <base-button
-                                    @click="editActivityValue(activity.val)"
+                                <base-button @click="editActivityValue"
                                     >Edit</base-button
                                 >
                                 <base-button @click="removeItem(activity.id)"
@@ -33,7 +32,27 @@
                                 >
                             </div>
                         </div>
-                        <div v-else></div>
+                        <div v-else>
+                            <base-dialog
+                                :show="isEditting"
+                                title="Edit your activity"
+                                fixed
+                            >
+                                <div class="input-group">
+                                    <label for="activity">Activity</label>
+                                    <input
+                                        type="text"
+                                        v-model.trim="activity.val"
+                                    />
+                                </div>
+                                <base-button @click="saveChanges(activity)"
+                                    >Save</base-button
+                                >
+                                <base-button @click="cancelChanges"
+                                    >Cancel</base-button
+                                >
+                            </base-dialog>
+                        </div>
                     </li>
                 </ul>
 
@@ -50,9 +69,6 @@
 
 <script>
 export default {
-    components: {
-        EditActivity,
-    },
     data() {
         return {
             activity: {
@@ -63,16 +79,14 @@ export default {
             pendingActivity: null,
             error: false,
             errorMessage: null,
-            allActivities: [],
         };
     },
     computed: {
         hasActivities() {
-            // return this.allActivities.length > 0;
-            return (
-                this.$store.getters.hasActivities &&
-                this.allActivities.length > 0
-            );
+            return this.$store.getters.hasActivities;
+        },
+        allActivities() {
+            return this.$store.getters.allActivities;
         },
     },
     methods: {
@@ -94,19 +108,20 @@ export default {
             this.activity.id = null;
             this.activity.val = '';
         },
-        loadAllActivities() {
-            const storedActivities = this.$store.getters.allActivities;
-            this.allActivities = storedActivities;
-        },
+        // loadAllActivities() {
+        //     const storedActivities = this.$store.getters.allActivities;
+        //     this.allActivities = storedActivities;
+        // },
         removeItem(id) {
-            const filteredActivities = this.allActivities.filter((activity) => {
-                return activity.id !== id;
-            });
-            this.allActivities = filteredActivities;
+            this.$store.dispatch('deleteActivity', id);
         },
-    },
-    created() {
-        this.loadAllActivities();
+        editActivityValue() {
+            this.isEditting = true;
+        },
+        saveChanges(activity) {},
+        cancelChanges() {
+            this.isEditting = false;
+        },
     },
 };
 </script>
