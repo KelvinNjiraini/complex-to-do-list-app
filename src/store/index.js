@@ -11,7 +11,7 @@ export default createStore({
             state.allActivities.push(payload);
         },
         deleteActivity(state, payload) {
-            state.allActivities = state.allActivities.splice(payload, 1);
+            state.allActivities.splice(payload, 1);
             console.log(state.allActivities);
         },
         editActivity(state, payload) {
