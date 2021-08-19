@@ -1,5 +1,13 @@
 <template>
     <div>
+        <base-dialog :show="isEditting" title="Edit your activity" fixed>
+            <div class="input-group">
+                <label for="activity">Activity</label>
+                <input type="text" v-model.trim="newActivityOnEdit.val" />
+            </div>
+            <base-button @click="saveChanges()">Save</base-button>
+            <base-button @click="cancelChanges">Cancel</base-button>
+        </base-dialog>
         <base-card>
             <h3>My Dashboard</h3>
             <section>
@@ -21,38 +29,14 @@
             <section>
                 <ul v-if="hasActivities">
                     <li v-for="(activity, index) in allActivities" :key="index">
-                        <div v-if="!isEditting">
-                            <span>{{ activity.val }}</span>
-                            <div>
-                                <base-button
-                                    @click="editActivityValue(activity)"
-                                    >Edit</base-button
-                                >
-                                <base-button @click="removeItem(activity.id)"
-                                    >Delete</base-button
-                                >
-                            </div>
-                        </div>
-                        <div v-else>
-                            <base-dialog
-                                :show="isEditting"
-                                title="Edit your activity"
-                                fixed
+                        <span>{{ activity.val }}</span>
+                        <div>
+                            <base-button @click="editActivityValue(activity)"
+                                >Edit</base-button
                             >
-                                <div class="input-group">
-                                    <label for="activity">Activity</label>
-                                    <input
-                                        type="text"
-                                        v-model.trim="activity.val"
-                                    />
-                                </div>
-                                <base-button @click="saveChanges()"
-                                    >Save</base-button
-                                >
-                                <base-button @click="cancelChanges"
-                                    >Cancel</base-button
-                                >
-                            </base-dialog>
+                            <base-button @click="removeItem(activity.id)"
+                                >Delete</base-button
+                            >
                         </div>
                     </li>
                 </ul>
@@ -80,7 +64,8 @@ export default {
             pendingActivity: null,
             error: false,
             errorMessage: null,
-            activityOnEdit: null,
+            oldActivityOnEdit: null,
+            newActivityOnEdit: null,
         };
     },
     computed: {
@@ -119,11 +104,15 @@ export default {
         },
         editActivityValue(activity) {
             this.isEditting = true;
-            this.activityOnEdit = activity;
+            this.oldActivityOnEdit = activity;
         },
         saveChanges() {
-            this.activityOnEdit.newValue = this.activity.val;
-            this.$store.dispatch('updateActivity', this.activityOnEdit);
+            this.newActivityOnEdit.id = this.oldActivityOnEdit.id;
+            this.$store.dispatch(
+                'updateActivity',
+                this.oldActivityOnEdit,
+                this.newActivityOnEdit
+            );
             this.isEditting = false;
         },
         cancelChanges() {
