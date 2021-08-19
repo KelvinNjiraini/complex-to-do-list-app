@@ -24,7 +24,8 @@
                         <div v-if="!isEditting">
                             <span>{{ activity.val }}</span>
                             <div>
-                                <base-button @click="editActivityValue"
+                                <base-button
+                                    @click="editActivityValue(activity)"
                                     >Edit</base-button
                                 >
                                 <base-button @click="removeItem(activity.id)"
@@ -45,7 +46,7 @@
                                         v-model.trim="activity.val"
                                     />
                                 </div>
-                                <base-button @click="saveChanges(activity)"
+                                <base-button @click="saveChanges()"
                                     >Save</base-button
                                 >
                                 <base-button @click="cancelChanges"
@@ -79,6 +80,7 @@ export default {
             pendingActivity: null,
             error: false,
             errorMessage: null,
+            activityOnEdit: null,
         };
     },
     computed: {
@@ -115,12 +117,13 @@ export default {
         removeItem(id) {
             this.$store.dispatch('deleteActivity', id);
         },
-        editActivityValue() {
+        editActivityValue(activity) {
             this.isEditting = true;
+            this.activityOnEdit = activity;
         },
-        saveChanges(activity) {
-            activity.newValue = this.activity.val;
-            this.$store.dispatch('updateActivity', activity);
+        saveChanges() {
+            this.activityOnEdit.newValue = this.activity.val;
+            this.$store.dispatch('updateActivity', this.activityOnEdit);
             this.isEditting = false;
         },
         cancelChanges() {
