@@ -1,16 +1,19 @@
 <template>
     <div>
+        <base-dialog fixed :show="isEditting" title="Edit your activity">
+            <div class="input-group">
+                <input type="text" v-model.trim="activity" />
+                <base-button @click="saveEdit">Save</base-button>
+                <base-button @click="cancelEdit">Cancel</base-button>
+            </div>
+        </base-dialog>
         <base-card>
             <h3>My Dashboard</h3>
             <section>
                 <form @submit.prevent="addActivity">
                     <div class="input-group">
-                        <label for="id">id</label>
-                        <input type="text" v-model.trim="activity.id" />
-                    </div>
-                    <div class="input-group">
                         <label for="activity">Activity</label>
-                        <input type="text" v-model.trim="activity.val" />
+                        <input type="text" v-model.trim="activity" />
                         <p v-if="error">{{ errorMessage }}</p>
                     </div>
                     <base-button>Add</base-button>
@@ -21,10 +24,12 @@
             <section>
                 <ul v-if="hasActivities">
                     <li v-for="(activity, index) in allActivities" :key="index">
-                        <span>{{ activity.val }}</span>
+                        <span>{{ activity }}</span>
                         <div>
-                            <base-button>Edit</base-button>
-                            <base-button @click="removeItem(activity.id)"
+                            <base-button @click="editItem(index, activity)"
+                                >Edit</base-button
+                            >
+                            <base-button @click="removeItem(index)"
                                 >Delete</base-button
                             >
                         </div>
@@ -46,10 +51,8 @@
 export default {
     data() {
         return {
-            activity: {
-                val: '',
-                id: null,
-            },
+            selectedActivityIndex: null,
+            activity: '',
             isEditting: false,
             pendingActivity: null,
             error: false,
@@ -68,27 +71,40 @@ export default {
         addActivity() {
             this.error = false;
             this.errorMessage = null;
-            if (this.activity.val === '') {
+            if (this.activity === '') {
                 this.error = true;
                 this.errorMessage =
                     'Please enter an activity before hitting the add button';
                 return;
             }
-            const newActivity = {
-                id: this.activity.id,
-                val: this.activity.val,
-            };
+            const newActivity = this.activity;
             // this.allActivities.push(newActivity);
             this.$store.dispatch('addActivity', newActivity);
-            this.activity.id = null;
-            this.activity.val = '';
+            this.activity = '';
         },
         // loadAllActivities() {
         //     const storedActivities = this.$store.getters.allActivities;
         //     this.allActivities = storedActivities;
         // },
-        removeItem(id) {
-            this.$store.dispatch('deleteActivity', id);
+        removeItem(index) {
+            this.$store.dispatch('deleteActivity', index);
+        },
+        editItem(index, activity) {
+            this.selectedActivityIndex = index;
+            this.activity = activity;
+            this.isEditting = true;
+        },
+        cancelEdit() {
+            this.isEditting = false;
+        },
+        saveEdit() {
+            const payload = {
+                index: this.selectedActivityIndex,
+                newActivity: this.activity,
+            };
+            this.$store.dispatch('editActivity', payload);
+            this.activity = '';
+            this.isEditting = false;
         },
     },
 };

@@ -11,9 +11,11 @@ export default createStore({
             state.allActivities.push(payload);
         },
         deleteActivity(state, payload) {
-            state.allActivities = state.allActivities.filter(
-                (activity) => activity.id !== payload
-            );
+            state.allActivities = state.allActivities.splice(payload, 1);
+            console.log(state.allActivities);
+        },
+        editActivity(state, payload) {
+            state.allActivities[payload.index] = payload.newActivity;
         },
     },
     actions: {
@@ -22,6 +24,9 @@ export default createStore({
         },
         deleteActivity(context, payload) {
             context.commit('deleteActivity', payload);
+        },
+        editActivity(context, payload) {
+            context.commit('editActivity', payload);
         },
     },
     getters: {
