@@ -95,6 +95,8 @@ export default {
             this.isEditting = true;
         },
         cancelEdit() {
+            this.selectedActivityIndex = null;
+            this.activity = '';
             this.isEditting = false;
         },
         saveEdit() {
@@ -104,6 +106,7 @@ export default {
             };
             this.$store.dispatch('editActivity', payload);
             this.activity = '';
+            this.selectedActivityIndex = null;
             this.isEditting = false;
         },
     },
