@@ -109,6 +109,9 @@ export default {
             this.selectedActivityIndex = null;
             this.isEditting = false;
         },
+        created() {
+            this.$store.getters.loadSavedActivities;
+        },
     },
 };
 </script>

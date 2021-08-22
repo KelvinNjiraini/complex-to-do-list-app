@@ -1,4 +1,5 @@
 import { createStore } from 'vuex';
+import db from './../firebaseInit';
 
 export default createStore({
     state() {
@@ -35,6 +36,19 @@ export default createStore({
         },
         allActivities(state) {
             return state.allActivities;
+        },
+        loadSavedActivities(state) {
+            db.collection('activities')
+                .get()
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        const data = {
+                            id: doc.id,
+                            activity: doc.data().activity,
+                        };
+                        return state.allActivities.push(data);
+                    });
+                });
         },
     },
 });
