@@ -1,5 +1,4 @@
 import { createStore } from 'vuex';
-import db from './../firebaseInit';
 
 export default createStore({
     state() {

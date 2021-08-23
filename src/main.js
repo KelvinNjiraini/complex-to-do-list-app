@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
+import './firebaseConfig';
 
 import BaseBadge from './components/ui/BaseBadge.vue';
 import BaseButton from './components/ui/BaseButton.vue';

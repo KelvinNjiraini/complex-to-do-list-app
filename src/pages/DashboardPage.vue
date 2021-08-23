@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import { activitiesRef } from './../firebaseConfig';
 export default {
     data() {
         return {
@@ -80,6 +81,7 @@ export default {
             }
             const newActivity = this.activity;
             // this.allActivities.push(newActivity);
+            activitiesRef.push({ activity: this.activity });
             this.$store.dispatch('addActivity', newActivity);
             this.activity = '';
         },
