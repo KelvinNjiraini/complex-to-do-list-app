@@ -57,6 +57,7 @@ export default {
             pendingActivity: null,
             error: false,
             errorMessage: null,
+            loadedActivities: [],
         };
     },
     computed: {
@@ -108,9 +109,6 @@ export default {
             this.activity = '';
             this.selectedActivityIndex = null;
             this.isEditting = false;
-        },
-        created() {
-            this.$store.getters.loadSavedActivities;
         },
     },
 };
