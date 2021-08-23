@@ -42,6 +42,10 @@
                 <p v-else-if="error">
                     There was an error
                 </p>
+
+                <!-- <ul>
+                    <li v-for="activity of storedActivities" :key="activit"></li>
+                </ul> -->
             </section>
         </base-card>
     </div>
@@ -58,8 +62,10 @@ export default {
             pendingActivity: null,
             error: false,
             errorMessage: null,
-            loadedActivities: [],
         };
+    },
+    firebase: {
+        storedActivities: activitiesRef,
     },
     computed: {
         hasActivities() {
