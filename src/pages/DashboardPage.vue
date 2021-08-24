@@ -23,13 +23,8 @@
         <base-card>
             <section>
                 <base-spinner v-if="isLoading && !error"></base-spinner>
-                <p v-else-if="!error && !isLoading">
-                    Currently no activities registered
-                </p>
-                <p v-else-if="error && !isLoading">
-                    There was an error
-                </p>
-                <ul v-if="!isLoading">
+
+                <ul v-if="!isLoading && hasActivities">
                     <li v-for="act in allActivities" :key="act.id">
                         <span>{{ act.activity }}</span>
                         <div>
@@ -42,6 +37,12 @@
                         </div>
                     </li>
                 </ul>
+                <p v-else-if="!error && !isLoading && !hasActivities">
+                    Currently no activities registered
+                </p>
+                <p v-else-if="error && !isLoading">
+                    There was an error
+                </p>
             </section>
         </base-card>
     </div>
