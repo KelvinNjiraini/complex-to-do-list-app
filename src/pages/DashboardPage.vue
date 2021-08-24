@@ -22,9 +22,16 @@
         </base-card>
         <base-card>
             <section>
-                <ul v-if="hasActivities">
-                    <li v-for="(activity, index) in allActivities" :key="index">
-                        <span>{{ activity }}</span>
+                <base-spinner v-if="isLoading && !error"></base-spinner>
+                <p v-else-if="!error && !isLoading">
+                    Currently no activities registered
+                </p>
+                <p v-else-if="error && !isLoading">
+                    There was an error
+                </p>
+                <ul v-if="!isLoading">
+                    <li v-for="act in activities" :key="act.id">
+                        <span>{{ act.activity }}</span>
                         <div>
                             <base-button @click="editItem(index, activity)"
                                 >Edit</base-button
@@ -35,17 +42,6 @@
                         </div>
                     </li>
                 </ul>
-
-                <p v-else-if="!hasActivities && !error">
-                    Currently no activities registered
-                </p>
-                <p v-else-if="error">
-                    There was an error
-                </p>
-
-                <!-- <ul>
-                    <li v-for="activity of storedActivities" :key="activit"></li>
-                </ul> -->
             </section>
         </base-card>
     </div>
@@ -53,6 +49,8 @@
 
 <script>
 import { activitiesRef } from './../firebaseConfig';
+import axios from 'axios';
+const baseUrl = `https://complex-to-do-default-rtdb.firebaseio.com/`;
 export default {
     data() {
         return {
@@ -62,6 +60,8 @@ export default {
             pendingActivity: null,
             error: false,
             errorMessage: null,
+            isLoading: false,
+            activities: [],
         };
     },
     firebase: {
@@ -75,8 +75,11 @@ export default {
             return this.$store.getters.allActivities;
         },
     },
+    async created() {
+        this.loadSavedActivities();
+    },
     methods: {
-        addActivity() {
+        async addActivity() {
             this.error = false;
             this.errorMessage = null;
             if (this.activity === '') {
@@ -87,7 +90,7 @@ export default {
             }
             const newActivity = this.activity;
             // this.allActivities.push(newActivity);
-            activitiesRef.push({ activity: this.activity });
+            activitiesRef.push(this.activity);
             this.$store.dispatch('addActivity', newActivity);
             this.activity = '';
         },
@@ -117,6 +120,21 @@ export default {
             this.activity = '';
             this.selectedActivityIndex = null;
             this.isEditting = false;
+        },
+        async loadSavedActivities() {
+            this.isLoading = true;
+            const response = await axios.get(baseUrl + 'activities.json');
+            // console.log(response.data);
+            const loadedActivities = [];
+            for (const [id, activity] of Object.entries(response.data)) {
+                const loadedAct = {
+                    id,
+                    activity,
+                };
+                loadedActivities.push(loadedAct);
+            }
+            this.activities = loadedActivities;
+            this.isLoading = false;
         },
     },
 };

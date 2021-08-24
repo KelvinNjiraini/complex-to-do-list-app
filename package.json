@@ -12,7 +12,7 @@
     "firebase": "^8.10.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
-    "vuefire": "^2.2.5",
+    "vuefire": "^3.0.0-alpha.2",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {

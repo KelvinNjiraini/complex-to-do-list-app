@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
+import { firestorePlugin } from 'vuefire';
 import './firebaseConfig';
 import BaseBadge from './components/ui/BaseBadge.vue';
 import BaseButton from './components/ui/BaseButton.vue';
@@ -18,4 +19,5 @@ app.component('base-dialog', BaseDialog);
 app.component('base-spinner', BaseSpinner);
 app.use(store);
 app.use(router);
+app.use(firestorePlugin);
 app.mount('#app');
