@@ -50,7 +50,7 @@
 <script>
 import { activitiesRef } from './../firebaseConfig';
 import axios from 'axios';
-const baseUrl = `https://complex-to-do-default-rtdb.firebaseio.com/`;
+// const baseUrl = `https://complex-to-do-default-rtdb.firebaseio.com/`;
 export default {
     data() {
         return {
