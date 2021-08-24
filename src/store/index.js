@@ -1,4 +1,6 @@
 import { createStore } from 'vuex';
+import axios from 'axios';
+const baseUrl = `https://complex-to-do-default-rtdb.firebaseio.com/`;
 
 export default createStore({
     state() {
@@ -16,6 +18,9 @@ export default createStore({
         editActivity(state, payload) {
             state.allActivities[payload.index] = payload.newActivity;
         },
+        loadAllActivities(state, payload) {
+            state.allActivities = payload;
+        },
     },
     actions: {
         addActivity(context, payload) {
@@ -26,6 +31,18 @@ export default createStore({
         },
         editActivity(context, payload) {
             context.commit('editActivity', payload);
+        },
+        async loadAllActivities(context) {
+            const response = await axios.get(baseUrl + 'activities.json');
+            const loadedActivities = [];
+            for (const [id, activity] of Object.entries(response.data)) {
+                const loadedAct = {
+                    id,
+                    activity,
+                };
+                loadedActivities.push(loadedAct);
+            }
+            context.commit('loadAllActivities', loadedActivities);
         },
     },
     getters: {

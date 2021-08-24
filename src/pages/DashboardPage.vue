@@ -30,7 +30,7 @@
                     There was an error
                 </p>
                 <ul v-if="!isLoading">
-                    <li v-for="act in activities" :key="act.id">
+                    <li v-for="act in allActivities" :key="act.id">
                         <span>{{ act.activity }}</span>
                         <div>
                             <base-button @click="editItem(index, activity)"
@@ -75,7 +75,7 @@ export default {
             return this.$store.getters.allActivities;
         },
     },
-    async created() {
+    created() {
         this.loadSavedActivities();
     },
     methods: {
@@ -89,15 +89,10 @@ export default {
                 return;
             }
             const newActivity = this.activity;
-            // this.allActivities.push(newActivity);
-            activitiesRef.push(this.activity);
+            await activitiesRef.push(this.activity);
             this.$store.dispatch('addActivity', newActivity);
             this.activity = '';
         },
-        // loadAllActivities() {
-        //     const storedActivities = this.$store.getters.allActivities;
-        //     this.allActivities = storedActivities;
-        // },
         async removeItem(id) {
             try {
                 const selectedUser = db.ref('activities/' + id);
@@ -129,17 +124,7 @@ export default {
         },
         async loadSavedActivities() {
             this.isLoading = true;
-            const response = await axios.get(baseUrl + 'activities.json');
-            // console.log(response.data);
-            const loadedActivities = [];
-            for (const [id, activity] of Object.entries(response.data)) {
-                const loadedAct = {
-                    id,
-                    activity,
-                };
-                loadedActivities.push(loadedAct);
-            }
-            this.activities = loadedActivities;
+            await this.$store.dispatch('loadAllActivities');
             this.isLoading = false;
         },
     },
