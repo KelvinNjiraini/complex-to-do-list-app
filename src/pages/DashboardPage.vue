@@ -36,7 +36,7 @@
                             <base-button @click="editItem(index, activity)"
                                 >Edit</base-button
                             >
-                            <base-button @click="removeItem(index)"
+                            <base-button @click="removeItem(act.id)"
                                 >Delete</base-button
                             >
                         </div>
@@ -48,9 +48,9 @@
 </template>
 
 <script>
-import { activitiesRef } from './../firebaseConfig';
+import { activitiesRef, db } from './../firebaseConfig';
 import axios from 'axios';
-// const baseUrl = `https://complex-to-do-default-rtdb.firebaseio.com/`;
+const baseUrl = `https://complex-to-do-default-rtdb.firebaseio.com/`;
 export default {
     data() {
         return {
@@ -98,8 +98,14 @@ export default {
         //     const storedActivities = this.$store.getters.allActivities;
         //     this.allActivities = storedActivities;
         // },
-        removeItem(index) {
-            this.$store.dispatch('deleteActivity', index);
+        async removeItem(id) {
+            try {
+                const selectedUser = db.ref('activities/' + id);
+                selectedUser.remove();
+            } catch (error) {
+                console.log(error);
+            }
+            // this.$store.dispatch('deleteActivity', index);
         },
         editItem(index, activity) {
             this.selectedActivityIndex = index;
