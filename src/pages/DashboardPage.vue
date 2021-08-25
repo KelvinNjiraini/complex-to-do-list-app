@@ -50,8 +50,6 @@
 
 <script>
 import { activitiesRef, db } from './../firebaseConfig';
-import axios from 'axios';
-const baseUrl = `https://complex-to-do-default-rtdb.firebaseio.com/`;
 export default {
     data() {
         return {
@@ -65,19 +63,12 @@ export default {
             activities: [],
         };
     },
-    firebase: {
-        storedActivities: activitiesRef,
-    },
     computed: {
         hasActivities() {
             return this.$store.getters.hasActivities;
         },
-        allActivities() {
-            return this.$store.getters.allActivities;
-        },
-    },
-    created() {
-        this.loadSavedActivities();
+
+        ...mapState['allActivities'],
     },
     methods: {
         async addActivity() {
@@ -122,11 +113,6 @@ export default {
             this.activity = '';
             this.selectedActivityIndex = null;
             this.isEditting = false;
-        },
-        async loadSavedActivities() {
-            this.isLoading = true;
-            await this.$store.dispatch('loadAllActivities');
-            this.isLoading = false;
         },
     },
 };

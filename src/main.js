@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
+import { rtdbPlugin } from 'vuefire';
 import './firebaseConfig';
 import BaseBadge from './components/ui/BaseBadge.vue';
 import BaseButton from './components/ui/BaseButton.vue';
@@ -17,5 +18,6 @@ app.component('base-card', BaseCard);
 app.component('base-dialog', BaseDialog);
 app.component('base-spinner', BaseSpinner);
 app.use(store);
+app.use(rtdbPlugin);
 app.use(router);
 app.mount('#app');

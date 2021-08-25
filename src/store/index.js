@@ -1,4 +1,6 @@
 import { createStore } from 'vuex';
+
+// import { db } from './../firebaseConfig';
 import axios from 'axios';
 const baseUrl = `https://complex-to-do-default-rtdb.firebaseio.com/`;
 
