@@ -1,6 +1,6 @@
+import './firebaseConfig';
 import { createApp } from 'vue';
 import { rtdbPlugin } from 'vuefire';
-import './firebaseConfig';
 import BaseBadge from './components/ui/BaseBadge.vue';
 import BaseButton from './components/ui/BaseButton.vue';
 import BaseCard from './components/ui/BaseCard.vue';

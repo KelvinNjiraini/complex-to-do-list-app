@@ -24,23 +24,24 @@
             <section>
                 <base-spinner v-if="isLoading && !error"></base-spinner>
 
-                <ul v-if="!isLoading && hasActivities">
-                    <li v-for="act in allActivities" :key="act.id">
+                <ul v-if="!isLoading">
+                    <li v-for="act of activities" :key="act['.key']">
                         <span>{{ act.activity }}</span>
                         <div>
-                            <base-button @click="editItem(index, activity)"
+                            <base-button
+                                @click="editItem(act['.key'], act.activity)"
                                 >Edit</base-button
                             >
-                            <base-button @click="removeItem(act.id)"
+                            <base-button @click="removeItem(act['.key'])"
                                 >Delete</base-button
                             >
                         </div>
                     </li>
                 </ul>
-                <p v-else-if="!error && !isLoading && !hasActivities">
+                <!-- <p v-if="!error && !isLoading">
                     Currently no activities registered
-                </p>
-                <p v-else-if="error && !isLoading">
+                </p> -->
+                <p v-if="error && !isLoading">
                     There was an error
                 </p>
             </section>
@@ -63,15 +64,11 @@ export default {
             activities: [],
         };
     },
-    computed: {
-        hasActivities() {
-            return this.$store.getters.hasActivities;
-        },
-
-        ...mapState['allActivities'],
+    firebase: {
+        activities: activitiesRef,
     },
     methods: {
-        async addActivity() {
+        addActivity() {
             this.error = false;
             this.errorMessage = null;
             if (this.activity === '') {
@@ -80,22 +77,14 @@ export default {
                     'Please enter an activity before hitting the add button';
                 return;
             }
-            const newActivity = this.activity;
-            await activitiesRef.push(this.activity);
-            this.$store.dispatch('addActivity', newActivity);
+            activitiesRef.push({ activity: this.activity });
             this.activity = '';
         },
-        async removeItem(id) {
-            try {
-                const selectedUser = db.ref('activities/' + id);
-                selectedUser.remove();
-            } catch (error) {
-                console.log(error);
-            }
-            // this.$store.dispatch('deleteActivity', index);
+        removeItem(id) {
+            activitiesRef.child(id).remove();
         },
-        editItem(index, activity) {
-            this.selectedActivityIndex = index;
+        editItem(id, activity) {
+            this.selectedActivityIndex = id;
             this.activity = activity;
             this.isEditting = true;
         },
@@ -105,11 +94,9 @@ export default {
             this.isEditting = false;
         },
         saveEdit() {
-            const payload = {
-                index: this.selectedActivityIndex,
-                newActivity: this.activity,
-            };
-            this.$store.dispatch('editActivity', payload);
+            activitiesRef
+                .child(this.selectedActivityIndex)
+                .update({ activity: this.activity });
             this.activity = '';
             this.selectedActivityIndex = null;
             this.isEditting = false;
