@@ -67,6 +67,11 @@ export default {
     firebase: {
         activities: activitiesRef,
     },
+    async mounted() {
+        this.isLoading = true;
+        await this.$rtdbBind('activities', activitiesRef);
+        this.isLoading = false;
+    },
     methods: {
         addActivity() {
             this.error = false;
