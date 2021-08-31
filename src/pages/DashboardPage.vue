@@ -42,7 +42,7 @@
                     Currently no activities registered
                 </p> -->
                 <p v-if="error && !isLoading">
-                    There was an error
+                    {{ errorMessage }}
                 </p>
             </section>
         </base-card>
@@ -69,7 +69,14 @@ export default {
     },
     async mounted() {
         this.isLoading = true;
-        await this.$rtdbBind('activities', activitiesRef);
+        try {
+            this.error = false;
+            this.errorMessage = null;
+            await this.$rtdbBind('activities', activitiesRef);
+        } catch (error) {
+            this.error = true;
+            this.errorMessage = error;
+        }
         this.isLoading = false;
     },
     methods: {

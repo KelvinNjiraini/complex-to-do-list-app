@@ -8,6 +8,7 @@ export default createStore({
     state() {
         return {
             allActivities: [],
+            userId: 'c3',
         };
     },
     mutations: {
@@ -53,6 +54,9 @@ export default createStore({
         },
         allActivities(state) {
             return state.allActivities;
+        },
+        userId(state) {
+            return state.userId;
         },
     },
 });
