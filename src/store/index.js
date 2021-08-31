@@ -1,60 +1,49 @@
 import { createStore } from 'vuex';
-
-// import { db } from './../firebaseConfig';
 import axios from 'axios';
-const baseUrl = `https://complex-to-do-default-rtdb.firebaseio.com/`;
+// const baseUrl = `https://complex-to-do-default-rtdb.firebaseio.com/`;
 
 export default createStore({
     state() {
         return {
             allActivities: [],
-            userId: 'c3',
+            userId: null,
+            token: null,
+            tokenExpiration: null,
         };
     },
     mutations: {
-        addActivity(state, payload) {
-            state.allActivities.push(payload);
-        },
-        deleteActivity(state, payload) {
-            state.allActivities.splice(payload, 1);
-        },
-        editActivity(state, payload) {
-            state.allActivities[payload.index] = payload.newActivity;
-        },
-        loadAllActivities(state, payload) {
-            state.allActivities = payload;
+        setUser(state, payload) {
+            state.token = payload.token;
+            state.userId = payload.userId;
+            state.tokenExpiration = payload.tokenExpiration;
         },
     },
     actions: {
-        addActivity(context, payload) {
-            context.commit('addActivity', payload);
-        },
-        deleteActivity(context, payload) {
-            context.commit('deleteActivity', payload);
-        },
-        editActivity(context, payload) {
-            context.commit('editActivity', payload);
-        },
-        async loadAllActivities(context) {
-            const response = await axios.get(baseUrl + 'activities.json');
-            const loadedActivities = [];
-            for (const [id, activity] of Object.entries(response.data)) {
-                const loadedAct = {
-                    id,
-                    activity,
-                };
-                loadedActivities.push(loadedAct);
+        async signup(context, payload) {
+            const response = await axios.post(
+                `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDPyIyYCXRd0SWyZP9ieFhSEhJFFrodTIw`,
+                JSON.stringify({
+                    email: payload.email,
+                    password: payload.password,
+                    returnSecureToken: true,
+                })
+            );
+            const data = response.data;
+            if (response.status !== 200) {
+                console.log(data);
+                const error = new Error(
+                    response.statusText || 'Failed to authenticate'
+                );
+                throw error;
             }
-            context.commit('loadAllActivities', loadedActivities);
+            context.commit('setUser', {
+                token: data.idToken,
+                userId: data.localId,
+                tokenExpiration: data.expiresIn,
+            });
         },
     },
     getters: {
-        hasActivities(state) {
-            return state.allActivities.length > 0;
-        },
-        allActivities(state) {
-            return state.allActivities;
-        },
         userId(state) {
             return state.userId;
         },
