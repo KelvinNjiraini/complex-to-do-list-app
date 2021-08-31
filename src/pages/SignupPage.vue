@@ -1,28 +1,40 @@
 <template>
-    <base-card>
-        <h3>Sign up to your account</h3>
-        <form @submit.prevent="signUp">
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    v-model.trim="email"
-                />
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input
-                    type="password"
-                    name="password"
-                    id="password"
-                    v-model.trim="password"
-                />
-            </div>
-            <base-button>Sign Up</base-button>
-        </form>
-    </base-card>
+    <div>
+        <base-dialog> </base-dialog>
+        <base-dialog :show="isLoading" fixed title="Authenticating...">
+            <base-spinner></base-spinner>
+        </base-dialog>
+        <base-card>
+            <h3>Sign up to your account</h3>
+            <form @submit.prevent="signUp">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input
+                        type="email"
+                        name="email"
+                        id="email"
+                        v-model.trim="email"
+                    />
+                    <p v-if="!formisValid">
+                        Please enter a valid email address
+                    </p>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        name="password"
+                        id="password"
+                        v-model.trim="password"
+                    />
+                    <p v-if="!formisValid">
+                        Password must be longer than 6 characters
+                    </p>
+                </div>
+                <base-button>Sign Up</base-button>
+            </form>
+        </base-card>
+    </div>
 </template>
 <script>
 export default {
@@ -30,19 +42,32 @@ export default {
         return {
             email: '',
             password: '',
-            error: false,
-            errorMessage: null,
+            error: null,
+            isLoading: false,
+            formisValid: true,
         };
     },
     methods: {
         async signUp() {
-            this.error = false;
-            this.errorMessage = null;
             if (this.email === '' || !this.email.includes('@')) {
-                this.error = true;
-                this.errorMessage = 'Please enter a valid email address';
+                this.formisValid = false;
                 return;
             }
+            if (this.password.length < 6) {
+                this.formisValid = false;
+                return;
+            }
+            this.isLoading = true;
+            try {
+                await this.$store.dispatch('signup', {
+                    email: this.email,
+                    password: this.password,
+                });
+            } catch (error) {
+                this.errorMessage =
+                    error.message || 'Failed to sign up. Try again later';
+            }
+            this.isLoading = false;
         },
     },
 };

@@ -22,12 +22,13 @@ export default createStore({
         async signup(context, payload) {
             const response = await axios.post(
                 `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDPyIyYCXRd0SWyZP9ieFhSEhJFFrodTIw`,
-                JSON.stringify({
+                {
                     email: payload.email,
                     password: payload.password,
                     returnSecureToken: true,
-                })
+                }
             );
+            console.log(response);
             const data = response.data;
             if (response.status !== 200) {
                 console.log(data);
