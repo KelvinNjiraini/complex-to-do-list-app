@@ -9,6 +9,7 @@ export default createStore({
             userId: null,
             token: null,
             tokenExpiration: null,
+            email: null,
         };
     },
     mutations: {
@@ -16,6 +17,7 @@ export default createStore({
             state.token = payload.token;
             state.userId = payload.userId;
             state.tokenExpiration = payload.tokenExpiration;
+            state.email = payload.email;
         },
     },
     actions: {
@@ -41,6 +43,7 @@ export default createStore({
                 token: data.idToken,
                 userId: data.localId,
                 tokenExpiration: data.expiresIn,
+                email: data.email,
             });
         },
         async login(context, payload) {
@@ -65,12 +68,19 @@ export default createStore({
                 token: data.idToken,
                 userId: data.localId,
                 tokenExpiration: data.expiresIn,
+                email: data.email,
             });
         },
     },
     getters: {
         userId(state) {
             return state.userId;
+        },
+        isAuthenticated(state) {
+            return state.token;
+        },
+        getEmail(state) {
+            return state.email;
         },
     },
 });

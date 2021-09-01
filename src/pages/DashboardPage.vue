@@ -1,50 +1,63 @@
 <template>
     <div>
-        <base-dialog fixed :show="isEditting" title="Edit your activity">
-            <div class="input-group">
-                <input type="text" v-model.trim="activity" />
-                <base-button @click="saveEdit">Save</base-button>
-                <base-button @click="cancelEdit">Cancel</base-button>
-            </div>
-        </base-dialog>
-        <base-card>
-            <h3>My Dashboard</h3>
-            <section>
-                <form @submit.prevent="addActivity">
-                    <div class="input-group">
-                        <label for="activity">Activity</label>
-                        <input type="text" v-model.trim="activity" />
-                        <p v-if="error">{{ errorMessage }}</p>
-                    </div>
-                    <base-button>Add</base-button>
-                </form>
-            </section>
-        </base-card>
-        <base-card>
-            <section>
-                <base-spinner v-if="isLoading && !error"></base-spinner>
-
-                <ul v-if="!isLoading">
-                    <li v-for="act of activities" :key="act['.key']">
-                        <span>{{ act.activity }}</span>
-                        <div>
-                            <base-button
-                                @click="editItem(act['.key'], act.activity)"
-                                >Edit</base-button
-                            >
-                            <base-button @click="removeItem(act['.key'])"
-                                >Delete</base-button
-                            >
+        <div v-if="isAuthenticated">
+            <base-dialog fixed :show="isEditting" title="Edit your activity">
+                <div class="input-group">
+                    <input type="text" v-model.trim="activity" />
+                    <base-button @click="saveEdit">Save</base-button>
+                    <base-button @click="cancelEdit">Cancel</base-button>
+                </div>
+            </base-dialog>
+            <base-card>
+                <h3>My Dashboard</h3>
+                <section>
+                    <form @submit.prevent="addActivity">
+                        <div class="input-group">
+                            <label for="activity">Activity</label>
+                            <input type="text" v-model.trim="activity" />
+                            <p v-if="error">{{ errorMessage }}</p>
                         </div>
-                    </li>
-                </ul>
-                <!-- <p v-if="!error && !isLoading">
+                        <base-button>Add</base-button>
+                    </form>
+                </section>
+            </base-card>
+            <base-card>
+                <section>
+                    <base-spinner v-if="isLoading && !error"></base-spinner>
+
+                    <ul v-if="!isLoading && !error">
+                        <li v-for="act of activities" :key="act['.key']">
+                            <span>{{ act.activity }}</span>
+                            <div>
+                                <base-button
+                                    @click="editItem(act['.key'], act.activity)"
+                                    >Edit</base-button
+                                >
+                                <base-button @click="removeItem(act['.key'])"
+                                    >Delete</base-button
+                                >
+                            </div>
+                        </li>
+                    </ul>
+
+                    <!-- <p v-if="!error && !isLoading">
                     Currently no activities registered
                 </p> -->
-                <p v-if="error && !isLoading">
-                    {{ errorMessage }}
-                </p>
-            </section>
+                    <p v-if="error && !isLoading">
+                        {{ errorMessage }}
+                    </p>
+                </section>
+            </base-card>
+        </div>
+        <base-card v-if="!isAuthenticated">
+            <h2>Seems like you are not logged into your account</h2>
+            <p>
+                Please
+                <base-button link to="/login" mode="flat">login</base-button>
+                or
+                <base-button link to="/signup" mode="flat">sign up</base-button>
+                to view your activities
+            </p>
         </base-card>
     </div>
 </template>
@@ -69,6 +82,7 @@ export default {
     },
     async mounted() {
         this.isLoading = true;
+
         try {
             this.error = false;
             this.errorMessage = null;
@@ -78,6 +92,11 @@ export default {
             this.errorMessage = error;
         }
         this.isLoading = false;
+    },
+    computed: {
+        isAuthenticated() {
+            return this.$store.getters.isAuthenticated;
+        },
     },
     methods: {
         addActivity() {

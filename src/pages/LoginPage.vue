@@ -68,6 +68,7 @@ export default {
                     error.message || 'Failed to sign up. Try again later';
             }
             this.isLoading = false;
+            this.$router.replace('/dashboard');
         },
         handleError() {
             this.error = null;

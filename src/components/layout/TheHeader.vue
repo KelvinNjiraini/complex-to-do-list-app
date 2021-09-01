@@ -2,16 +2,36 @@
     <header>
         <nav>
             <h1><router-link to="/">Manage your tasks</router-link></h1>
-            <ul>
+            <ul v-if="isAuthenticated">
                 <!-- <li><router-link to="/login">Login</router-link></li> -->
                 <li>
-                    <base-badge title="User1"></base-badge>
+                    <base-badge :title="getEmail"></base-badge>
                 </li>
                 <base-button>Logout</base-button>
+            </ul>
+            <ul v-if="!isAuthenticated">
+                <li>
+                    <base-button link to="/login">login</base-button>
+                </li>
+                <li>
+                    <base-button link to="/signup">Sign Up</base-button>
+                </li>
             </ul>
         </nav>
     </header>
 </template>
+<script>
+export default {
+    computed: {
+        isAuthenticated() {
+            return this.$store.getters.isAuthenticated;
+        },
+        getEmail() {
+            return this.$store.getters.getEmail;
+        },
+    },
+};
+</script>
 <style scoped>
 header {
     width: 100%;
