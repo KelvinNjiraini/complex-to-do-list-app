@@ -71,13 +71,21 @@ export default createStore({
                 email: data.email,
             });
         },
+        logout(context) {
+            context.commit('setUser', {
+                userId: null,
+                token: null,
+                tokenExpiration: null,
+                email: null,
+            });
+        },
     },
     getters: {
         userId(state) {
             return state.userId;
         },
         isAuthenticated(state) {
-            return state.token;
+            return !!state.token;
         },
         getEmail(state) {
             return state.email;

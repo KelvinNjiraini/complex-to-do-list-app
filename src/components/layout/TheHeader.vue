@@ -7,7 +7,9 @@
                 <li>
                     <base-badge :title="getEmail"></base-badge>
                 </li>
-                <base-button>Logout</base-button>
+                <li>
+                    <base-button @click="logout">Logout</base-button>
+                </li>
             </ul>
             <ul v-if="!isAuthenticated">
                 <li>
@@ -28,6 +30,11 @@ export default {
         },
         getEmail() {
             return this.$store.getters.getEmail;
+        },
+    },
+    methods: {
+        logout() {
+            this.$store.dispatch('logout');
         },
     },
 };
