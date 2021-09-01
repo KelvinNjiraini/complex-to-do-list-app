@@ -1,6 +1,12 @@
 <template>
     <div>
-        <base-dialog> </base-dialog>
+        <base-dialog
+            :show="!!error"
+            title="An error occurred"
+            @close="handleError"
+        >
+            <p>{{ error }}</p>
+        </base-dialog>
         <base-dialog :show="isLoading" fixed title="Authenticating...">
             <base-spinner></base-spinner>
         </base-dialog>
@@ -64,10 +70,13 @@ export default {
                     password: this.password,
                 });
             } catch (error) {
-                this.errorMessage =
+                this.error =
                     error.message || 'Failed to sign up. Try again later';
             }
             this.isLoading = false;
+        },
+        handleError() {
+            this.error = null;
         },
     },
 };

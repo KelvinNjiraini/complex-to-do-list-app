@@ -1,28 +1,40 @@
 <template>
-    <base-card>
-        <h3>Log into your account</h3>
-        <form @submit.prevent="Login">
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    v-model.trim="email"
-                />
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input
-                    type="password"
-                    name="password"
-                    id="password"
-                    v-model.trim="password"
-                />
-            </div>
-            <base-button>Login</base-button>
-        </form>
-    </base-card>
+    <div>
+        <base-dialog
+            :show="!!error"
+            title="An error occurred"
+            @close="handleError"
+        >
+            <p>{{ error }}</p>
+        </base-dialog>
+        <base-dialog :show="isLoading" fixed title="Authenticating...">
+            <base-spinner></base-spinner>
+        </base-dialog>
+        <base-card>
+            <h3>Log into your account</h3>
+            <form @submit.prevent="Login">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input
+                        type="email"
+                        name="email"
+                        id="email"
+                        v-model.trim="email"
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        name="password"
+                        id="password"
+                        v-model.trim="password"
+                    />
+                </div>
+                <base-button>Login</base-button>
+            </form>
+        </base-card>
+    </div>
 </template>
 <script>
 export default {
@@ -30,19 +42,35 @@ export default {
         return {
             email: '',
             password: '',
-            error: false,
-            errorMessage: null,
+            error: null,
+            isLoading: false,
+            formisValid: true,
         };
     },
     methods: {
         async Login() {
-            this.error = false;
-            this.errorMessage = null;
             if (this.email === '' || !this.email.includes('@')) {
-                this.error = true;
-                this.errorMessage = 'Please enter a valid email address';
+                this.formisValid = false;
                 return;
             }
+            if (this.password.length < 6) {
+                this.formisValid = false;
+                return;
+            }
+            this.isLoading = true;
+            try {
+                await this.$store.dispatch('login', {
+                    email: this.email,
+                    password: this.password,
+                });
+            } catch (error) {
+                this.error =
+                    error.message || 'Failed to sign up. Try again later';
+            }
+            this.isLoading = false;
+        },
+        handleError() {
+            this.error = null;
         },
     },
 };
