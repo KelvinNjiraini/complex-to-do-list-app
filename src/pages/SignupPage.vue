@@ -69,6 +69,7 @@ export default {
                     email: this.email,
                     password: this.password,
                 });
+                this.$router.replace('/dashboard');
             } catch (error) {
                 this.error =
                     error.message || 'Failed to sign up. Try again later';

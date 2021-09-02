@@ -63,12 +63,12 @@ export default {
                     email: this.email,
                     password: this.password,
                 });
+                this.$router.replace('/dashboard');
             } catch (error) {
                 this.error =
                     error.message || 'Failed to sign up. Try again later';
             }
             this.isLoading = false;
-            this.$router.replace('/dashboard');
         },
         handleError() {
             this.error = null;
